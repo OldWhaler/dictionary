@@ -1,8 +1,9 @@
 .description {
-  flex: 1 0 60%;
+  flex: 1 1 65%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   row-gap: 1.2rem;
   border-left: 1px dotted #000;
 
@@ -13,36 +14,47 @@
   }
 
   &__list {
-    padding: 0 40px;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     row-gap: 20px;
   }
 }
 
 .description-item {
   font-size: 1.2rem;
+  flex: 1 1 auto;
 
   &__speech {
     display: block;
     text-align: center;
     font-size: 1.1rem;
     margin-bottom: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     border-bottom: 1px dotted #000;
   }
 
   &__list {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     row-gap: 10px;
     list-style: none;
+    padding: 0 10px;
     font-size: 1rem;
   }
 
   &__list-elem {
+    flex: 1 1 auto;
+
     span {
       font-weight: bold;
     }
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .description {
+    border-left: none;
   }
 }

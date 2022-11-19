@@ -15,6 +15,7 @@ function Search({
       <input
         className='search__input'
         type="text"
+        placeholder='Enter one English word'
         ref={inputRef}
         value={inputValue}
         onChange={e => setInputValue(e.target.value)}

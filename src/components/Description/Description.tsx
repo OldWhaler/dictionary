@@ -7,7 +7,7 @@ function Description({ wordInfo }: DescriptionProps): JSX.Element {
   return (
     <>
       {wordInfo.length > 0 && <div className='description'>
-        <h2 className='description__headling'>{wordInfo[0].word}</h2>
+        <h2 className='description__headling'>Word: {wordInfo[0].word}</h2>
         <ol className='description__list'>
 
           {wordInfo[0].meanings.map(meaning => {
