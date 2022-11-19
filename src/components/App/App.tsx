@@ -1,64 +1,74 @@
 import { useState, useRef } from 'react';
-import WordInfo from 'types/DataInterface';
+
+import Search from 'components/Search/Search';
+import Description from 'components/Description/Description';
+import Modal from 'components/Modal/Modal';
+
+import { WordInfo, ModalParams } from 'types';
 import './App.scss';
 
-function App() {
+function App(): JSX.Element {
   const [inputValue, setInputValue] = useState('');
   const [wordInfo, setWordInfo] = useState<WordInfo[]>([])
+  const [modalParams, setModalParams] = useState<ModalParams>({
+    visible: false,
+    text: ''
+  })
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   function changeTextAreaValue() {
-    const word = inputRef.current?.value as string;
+    const word = inputRef.current?.value.trim() as string;
     setInputValue('')
+    if (word.length === 0) {
+      inputRef.current?.focus()
+      return
+    }
 
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-      .then(response => response.json())
-      .then((data: WordInfo[]) => {
-        const { word, meanings } = data[0]
-        setWordInfo([{ word, meanings }])
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          throw new Error(`${response.status}`)
+        }
+      })
+
+      .then(
+        (data: WordInfo[]) => {
+          const { word, meanings } = data[0]
+          setWordInfo([{ word, meanings }])
+        })
+
+      .catch(e => {
+        const statusCode = +e.message;
+        if (statusCode === 404) {
+          setModalParams({
+            visible: true,
+            text: 'Word not found'
+          })
+        } else if (statusCode >= 500) {
+          setModalParams({
+            visible: true,
+            text: 'Server error, please try again later'
+          })
+        }
       })
   }
 
   return (
     <div className="app">
-
-      <div className="app__row">
-        <h2 className='app__headling'>Dictionary</h2>
-
-        <input
-          className='app__input'
-          type="text"
-          ref={inputRef}
-          value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' ? changeTextAreaValue() : null}
-        />
-
-        <button className='app__button'
-          onClick={changeTextAreaValue}>
-          <img src={`${__dirname}loupe.svg`} alt="" />
-        </button>
-      </div>
-
-      <div className="app__row">
-        {wordInfo.length > 0 && <>
-          <h2 className='app__headling'>{wordInfo[0].word}</h2>
-          <ul>
-            {wordInfo[0].meanings.map(meaning => {
-              return <>
-                <li>{meaning.partOfSpeech}</li>
-                <ul>
-                  {meaning.definitions.map(elem => {
-                    return <li>{elem.definition}</li>
-                  })}
-                </ul>
-              </>
-            })}
-          </ul>
-        </>}
-
-      </div>
-
+      {modalParams.visible && <Modal
+        setModalParams={setModalParams}
+        modalParams={modalParams}
+        inputRef={inputRef} />}
+      <Search
+        inputRef={inputRef}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        changeTextAreaValue={changeTextAreaValue}
+      />
+      <Description wordInfo={wordInfo} />
     </div>
   );
 }

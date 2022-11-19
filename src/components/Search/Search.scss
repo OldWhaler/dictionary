@@ -1,0 +1,31 @@
+.search {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 1 40%;
+  row-gap: 1.2rem;
+
+  &__headling {
+    margin: 0;
+    text-align: center;
+    font-size: 2.5rem;
+  }
+
+  &__input {
+    padding: 0.5rem;
+    width: 80%;
+    border: 1px solid #000;
+    border-radius: 10px;
+    font-size: 1.1rem;
+  }
+
+  &__button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    cursor: pointer;
+    background-image: url('../../assets/loupe.svg');
+  }
+}
